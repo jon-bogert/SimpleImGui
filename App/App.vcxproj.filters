@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Precompiled.cpp">
+      <Filter>001_Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>000_Backend</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Precompiled.h">
+      <Filter>001_Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Style.h">
+      <Filter>000_Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugUtil.h">
+      <Filter>000_Backend</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="000_Backend">
+      <UniqueIdentifier>{0af537fc-ee65-4d98-aa4d-69e2f670d665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="001_Precompiled">
+      <UniqueIdentifier>{9d95d92a-1b44-45d5-a078-1a51966588ab}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

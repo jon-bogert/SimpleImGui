@@ -7,6 +7,7 @@
 #include "Application.h"
 #include "Style.h"
 
+
 // Data
 static ID3D11Device* g_pd3dDevice = nullptr;
 static ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
@@ -52,8 +53,21 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
+    switch (app.style)
+    {
+    case UIStyle::Dark:
+        ImGui::StyleColorsDark();
+        break;
+    case UIStyle::Light:
+        ImGui::StyleColorsLight();
+        break;
+    case UIStyle::Custom:
+        SetUIStyle();
+        break;
+    default:
+        ASSERT(false, "UIStyle not implemented");
+        break;
+    }
 
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
@@ -74,7 +88,6 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
-    SetUIStyle();
 
     ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 

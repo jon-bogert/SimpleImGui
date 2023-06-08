@@ -8,3 +8,9 @@
 
 //System Libraries
 #include <tchar.h>
+#include <stdio.h>
+#include <Windows.h>
+#include <vector>
+
+//In-Project
+#include "DebugUtil.h"
