@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+#Visual Studio Cache
+/.vs
+
+#Build Directory
+/Build
+*/int
+
+#ImGui Cache File
+imgui.ini
