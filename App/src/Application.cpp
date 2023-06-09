@@ -1,8 +1,10 @@
 #include "Precompiled.h"
 #include "Application.h"
+#include "WindowManager.h"
 
 void Application::Start()
 {
+	
 }
 
 void Application::PreUpdate()

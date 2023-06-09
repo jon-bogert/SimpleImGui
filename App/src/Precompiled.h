@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <vector>
+#include <memory>
+#include <string>
 
 //In-Project
 #include "DebugUtil.h"

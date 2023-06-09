@@ -6,6 +6,7 @@
 
 #include "Application.h"
 #include "Style.h"
+#include "WindowManager.h"
 
 
 // Data
@@ -21,6 +22,7 @@ void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool GetDX11WindowPosition(HWND hwnd, float& x, float& y);
 
 Application app;
 
@@ -51,6 +53,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    //if (app.useDocking) io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Not yet working
+    if (app.useFloatingWindows) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     // Setup Dear ImGui style
     switch (app.style)
@@ -92,12 +96,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
     ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 
     app.Start();
+    //extra window start functions called when added to the WindowManager
 
     // Main loop
     bool done = false;
     while (!done)
     {
         app.PreUpdate();
+        WindowManager::PreUpdate();
         // Poll and handle messages (inputs, window resize, etc.)
         // See the WndProc() function below for our to dispatch events to the Win32 backend.
         MSG msg;
@@ -130,9 +136,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
             static float f = 0.0f;
             static int counter = 0;
 
-
+            ImVec2 pos = {0.f, 0.f};
+            GetDX11WindowPosition(hwnd, pos.x, pos.y);
             ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
-            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowPos(pos);
 
             // Set the window flags to remove the title bar
             ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
@@ -142,7 +149,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
             app.OnGUI();
             // End the ImGui window
             ImGui::End();
+            WindowManager::OnGUI();
+
             app.PostUpdate();
+            WindowManager::PostUpdate();
         }
 
         // Rendering
@@ -152,11 +162,19 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+        // Update and Render additional Platform Windows
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
         g_pSwapChain->Present(1, 0); // Present with vsync
         //g_pSwapChain->Present(0, 0); // Present without vsync
     }
     
     // Cleanup
+    WindowManager::Destroy();
     app.Destroy();
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
@@ -255,4 +273,22 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
     }
     return ::DefWindowProcW(hWnd, msg, wParam, lParam);
+}
+
+bool GetDX11WindowPosition(HWND hwnd, float& x, float& y)
+{
+    RECT clientRect;
+    if (GetClientRect(hwnd, &clientRect))
+    {
+        POINT point;
+        point.x = clientRect.left;
+        point.y = clientRect.top;
+        if (ClientToScreen(hwnd, &point))
+        {
+            x = point.x;
+            y = point.y;
+            return true;
+        }
+    }
+    return false;
 }
