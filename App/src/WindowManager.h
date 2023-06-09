@@ -19,7 +19,7 @@ class WindowManager final
 {
 	WindowManager() {}
 	static WindowManager& Get();
-	std::vector<std::unique_ptr<Window>> _windows;
+	std::list<std::unique_ptr<Window>> _windows;
 
 public:
 	template <class WinType>
