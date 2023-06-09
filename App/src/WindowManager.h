@@ -23,7 +23,7 @@ class WindowManager final
 
 public:
 	template <class WinType>
-	static void NewWindow();
+	static WinType* NewWindow();
 
 	static void PreUpdate();
 	static void OnGUI();
@@ -32,9 +32,10 @@ public:
 };
 
 template <class WinType>
-inline void WindowManager::NewWindow()
+inline WinType* WindowManager::NewWindow()
 {
 	static_assert(std::is_base_of_v<Window, WinType>, "WindowManager: Cannot add Non-Window type");
 	Get()._windows.push_back(std::make_unique<WinType>());
 	Get()._windows.back()->Start();
+	return Get()._windows.back().get();
 }
